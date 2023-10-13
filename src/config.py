@@ -19,10 +19,10 @@ def get_working_dir():
     return __WORKING_DIR
 
 
-DB_PATH = get_working_dir().joinpath("main.db")
-__DB_BACKUPS_PATH = get_working_dir().joinpath("backups")
+MODELS_PATH = get_working_dir().joinpath("models.json")
+__MODELS_BACKUPS_PATH = get_working_dir().joinpath("backups")
 
 
 def get_backups_dir():
-    __DB_BACKUPS_PATH.mkdir(parents=True, exist_ok=True)
-    return __DB_BACKUPS_PATH
+    __MODELS_BACKUPS_PATH.mkdir(parents=True, exist_ok=True)
+    return __MODELS_BACKUPS_PATH

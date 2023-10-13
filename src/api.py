@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from mathgen import MathGenCode, MathProblemGenerator
 from pydantic import BaseModel
 
-from . import config, db, responses, utils
+from . import config, models, responses, utils
 
 app = FastAPI()
 
@@ -20,7 +20,7 @@ async def require_api_token(request: Request, call_next):
 
 @app.post("/reset")
 async def reset_db():
-    db.rebuild_db()
+    models.load_models()
     return responses.success()
 
 
@@ -39,12 +39,10 @@ class GenerateCodeRequest(GenerateRequest):
 
 @app.post("/generate/model")
 async def generate_from_model(gen: GenerateModelRequest):
-    model, error = db.get_model(gen.model)
-    if error or model is None:
-        return responses.error(error)
-
+    if not models.has_model(gen.model):
+        return responses.error(f"Model {gen.model} does not exist.")
     return responses.success(
-        MathProblemGenerator.from_model(model, seed=gen.seed).generate_multiple(gen.num)
+        MathProblemGenerator.from_model(models.get_model(gen.model), seed=gen.seed).generate_multiple(gen.num)
     )
 
 

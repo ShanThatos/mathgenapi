@@ -216,7 +216,7 @@ pydantic = "^2.3.0"
 type = "git"
 url = "https://github.com/ShanThatos/mathgen.git"
 reference = "HEAD"
-resolved_reference = "c50fa238138b728bbc7c9e3008323c593162f703"
+resolved_reference = "e074e86ce83075ab8a2dffc6a142d4f0c4f10991"
 
 [[package]]
 name = "mypy-extensions"
