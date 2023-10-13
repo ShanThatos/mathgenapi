@@ -24,10 +24,17 @@ async def reset_db():
     return responses.success()
 
 
-class GenerateModelRequest(BaseModel):
-    model: str
+class GenerateRequest(BaseModel):
     num: int = 1
     seed: Optional[int] = None
+
+
+class GenerateModelRequest(GenerateRequest):
+    model: str
+
+
+class GenerateCodeRequest(GenerateRequest):
+    code: MathGenCode
 
 
 @app.post("/generate/model")
@@ -39,12 +46,6 @@ async def generate_from_model(gen: GenerateModelRequest):
     return responses.success(
         MathProblemGenerator.from_model(model, seed=gen.seed).generate_multiple(gen.num)
     )
-
-
-class GenerateCodeRequest(BaseModel):
-    code: MathGenCode
-    num: int = 1
-    seed: Optional[int] = None
 
 
 @app.post("/generate/code")
