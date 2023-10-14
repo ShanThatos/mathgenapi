@@ -42,14 +42,12 @@ async def generate_from_model(gen: GenerateModelRequest):
     if not models.has_model(gen.model):
         return responses.error(f"Model {gen.model} does not exist.")
     return responses.success(
-        MathProblemGenerator.from_model(models.get_model(gen.model), seed=gen.seed).generate_multiple(gen.num)
+        MathProblemGenerator(models.get_model(gen.model), seed=gen.seed).generate_multiple(gen.num)
     )
 
 
 @app.post("/generate/code")
 async def generate_from_code(gen: GenerateCodeRequest):
     return responses.success(
-        MathProblemGenerator(
-            "generated_from_code", gen.code, seed=gen.seed
-        ).generate_multiple(gen.num)
+        MathProblemGenerator(gen.code, seed=gen.seed).generate_multiple(gen.num)
     )

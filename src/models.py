@@ -21,14 +21,14 @@ def load_models():
     if not config.MODELS_PATH.exists():
         config.MODELS_PATH.write_text("[]")
     try:
-        __MODELS = ModelsTypeAdapter.validate_json(config.MODELS_PATH.read_text())
+        __MODELS = ModelsTypeAdapter.validate_json(config.MODELS_PATH.read_bytes())
     except ValidationError as e:
         print(e)
 
 def save_models():
     global __MODELS
     backup_models()
-    json.dump(__MODELS, config.MODELS_PATH.open("w"))
+    config.MODELS_PATH.write_bytes(ModelsTypeAdapter.dump_json(__MODELS, indent=2, exclude_defaults=True))
 
 def backup_models():
     backup_name = datetime.datetime.now().strftime(r"models-backup-%Y%m%d%H%M%S")
@@ -42,10 +42,10 @@ def backup_models():
     shutil.copyfile(config.MODELS_PATH, backup_path)
     print(f"Backed up models to: {backup_path}")
 
-def add_model(model: MathProblemModel) -> Optional[str]:
+def add_model(model) -> Optional[str]:
     global __MODELS
     try:
-        MathProblemModelAdapter.validate_python(model)
+        model = MathProblemModelAdapter.validate_python(model)
     except ValidationError as e:
         raise ModelsException(f"Invalid model") from e
     if has_model(model.name):
